@@ -1,0 +1,13 @@
+[Unit]
+Description=Signal jsonRpc daemon
+After=network.target
+
+[Service]
+Type=simple
+WorkingDirectory=/usr/local/signaldaemon
+ExecStart=/usr/local/signaldaemon/signaldaemon.sh
+Restart=always
+
+[Install]
+WantedBy=default.target
+
