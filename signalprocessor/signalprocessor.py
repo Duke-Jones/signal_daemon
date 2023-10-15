@@ -3,6 +3,8 @@ import json
 from lib.json_extension import JsonTool
 import os
 
+SENDRECEIPT="{\"jsonrpc\":\"2.0\",\"method\":\"sendReceipt\",\"params\":{\"recipient\":[\"**recipient**\"],\"targetTimestamp\":**targetTimestamp**,\"type\":\"read\"}, \"id\":\"**ID**\"}"
+
 if __name__ == '__main__':
 
     with open('signalprocessor.json') as user_file:
@@ -27,13 +29,19 @@ if __name__ == '__main__':
                 if jtool.trygetvalue(received, 'jsonrpc') == (True, '2.0') and \
                    jtool.trygetvalue(received, 'method') == (True, 'receive'):
 
-                    srcnumbertpl  = jtool.trygetvalue(received, 'params/envelope/sourceNumber')
-                    srccommandtpl = jtool.trygetvalue(received, 'params/envelope/dataMessage/message')
-                    srcsendertpl  = jtool.trygetvalue(received, 'params/envelope/sourceNumber')
+                    srcnumbertpl    = jtool.trygetvalue(received, 'params/envelope/sourceNumber')
+                    srccommandtpl   = jtool.trygetvalue(received, 'params/envelope/dataMessage/message')
+                    srctimestamptpl = jtool.trygetvalue(received, 'params/envelope/timestamp')
 
                     if srcnumbertpl[0] and \
                        srccommandtpl[0] and \
-                       srcsendertpl[0]:
+                       srctimestamptpl[0]:
+
+                        SENDRECEIPT.replace('**recipient**', srcnumbertpl[1], 1)
+                        SENDRECEIPT.replace('**targetTimestamp**', srcnumbertpl[1], 1)
+                        SENDRECEIPT.replace('**ID**', srctimestamptpl[1], 1)
+                        #os.system('echo \'' + SENDRECEIPT + '\' | socat STDIN UNIX-CONNECT:/tmp/signal_cli.send')
+                        os.system('echo \'' + SENDRECEIPT + '\' | socat STDIN UNIX-CONNECT:/tmp/signal_cli.send')
 
                         cfgcommandtpl = jtool.trygetvalue(configuration, 'commands/' + srccommandtpl[1])
                         cfgallowedtpl = jtool.trygetvalue(configuration, 'commands/' + srccommandtpl[1] + '/allowed_to/' + srcnumbertpl[1])
