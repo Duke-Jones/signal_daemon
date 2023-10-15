@@ -1,0 +1,22 @@
+{
+  "signalprocessor": "1.0",
+  "commands": {
+    "command: restart": {
+      "allowed_to": {
+        "+491720000001" : true,
+        "+491720000002" : true
+      },
+       "execute" : "reboot now",
+       "answer"  : "Ok, system is rebooting!"
+    },
+      "command: shutdown": {
+        "allowed_to": {
+          "+491720000001" : true,
+          "+491720000002" : false
+        },
+        "execute" : "shutdown now",
+        "answer"  : "Ok, system is shutting down!"
+      }
+  },
+  "default_answer" : "I did not understand that"
+}
